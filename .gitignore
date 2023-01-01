@@ -1,0 +1,15 @@
+# Project exclude paths
+# idea
+out
+*.ipr
+*.iws
+*.iml
+/.idea/
+
+# gradle
+/build/
+/.gradle/
+
+# other
+eclipse
+run

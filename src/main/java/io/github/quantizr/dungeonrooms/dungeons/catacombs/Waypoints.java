@@ -26,6 +26,7 @@ import io.github.quantizr.dungeonrooms.DungeonRooms;
 import io.github.quantizr.dungeonrooms.events.PacketEvent;
 import io.github.quantizr.dungeonrooms.gui.WaypointsGUI;
 import io.github.quantizr.dungeonrooms.utils.MapUtils;
+import io.github.quantizr.dungeonrooms.utils.RoomDetectionUtils;
 import io.github.quantizr.dungeonrooms.utils.Utils;
 import io.github.quantizr.dungeonrooms.utils.WaypointUtils;
 import net.minecraft.block.Block;
@@ -87,7 +88,7 @@ public class Waypoints {
         if (!enabled) return;
         if (practiceModeOn && !DungeonRooms.keyBindings[2].isKeyDown()) return;
         String roomName = RoomDetection.roomName;
-        if (roomName.equals("undefined") || DungeonRooms.roomsJson.get(roomName) == null || secretsList == null) return;
+        if (!(roomName.equals("undefined") || DungeonRooms.roomsJson.get(roomName) == null || secretsList == null))
         if (DungeonRooms.waypointsJson.get(roomName) != null) {
             JsonArray secretsArray = DungeonRooms.waypointsJson.get(roomName).getAsJsonArray();
             int arraySize = secretsArray.size();
@@ -181,7 +182,7 @@ public class Waypoints {
                 GlStateManager.enableCull();
             }
         }
-        Set<CustomPoint> cP = CustomWaypointsFile.points.get(roomName);
+        Set<CustomPoint> cP = CustomWaypointsFile.points.get((RoomDetection.isInBossRoom) ? RoomDetectionUtils.getBossRoomId() : roomName);
         if(cP != null && !cP.isEmpty() && customWaypointsOn){
             for(CustomPoint p : cP){
                 BlockPos pos = MapUtils.relativeToActual(p.getPosition(), RoomDetection.roomDirection, RoomDetection.roomCorner);
