@@ -3,6 +3,7 @@ package io.github.quantizr.dungeonrooms.CustomWaypoints;
 import io.github.quantizr.dungeonrooms.DungeonRooms;
 import io.github.quantizr.dungeonrooms.dungeons.catacombs.RoomDetection;
 import io.github.quantizr.dungeonrooms.utils.MapUtils;
+import io.github.quantizr.dungeonrooms.utils.RoomDetectionUtils;
 import io.github.quantizr.dungeonrooms.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.BlockPos;
@@ -56,8 +57,9 @@ public class CustomWaypointsFile {
     }
     public static void setWaypoint(BlockPos loc, String name){
         DungeonRooms.logger.info(loc.toString());
-        String room = RoomDetection.roomName;
-        loc = MapUtils.actualToRelative(loc, RoomDetection.roomDirection, RoomDetection.roomCorner);
+        String room = (RoomDetection.isInBossRoom) ? RoomDetectionUtils.getBossRoomId() : RoomDetection.roomName;
+        if(!RoomDetection.isInBossRoom)
+            loc = MapUtils.actualToRelative(loc, RoomDetection.roomDirection, RoomDetection.roomCorner);
         int pointer = 0;
         while (config.hasCategory(pointer + ""))
             pointer++;
@@ -66,7 +68,7 @@ public class CustomWaypointsFile {
         config.getCategory(pointer + "").put("y", new Property("y", loc.getY() + "", Property.Type.INTEGER));
         config.getCategory(pointer + "").put("z", new Property("z", loc.getZ() + "", Property.Type.INTEGER));
         config.getCategory(pointer + "").put("room", new Property("room", room, Property.Type.STRING));
-        Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Added a new waypoint to the relative Coords: " + loc.toString()));
+        Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Added a new waypoint to the relative Coords: " + blockPosToString(loc)));
         config.save();
         if(points.containsKey(room))
             points.get(room).add(new CustomPoint(loc, name));
@@ -75,5 +77,8 @@ public class CustomWaypointsFile {
             cP.add(new CustomPoint(loc, name));
             points.put(room, cP);
         }
+    }
+    private static String blockPosToString(BlockPos p){
+        return p.getX() + " " + p.getY() + " " + p.getZ();
     }
 }

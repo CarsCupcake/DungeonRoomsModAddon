@@ -18,6 +18,7 @@
 
 package io.github.quantizr.dungeonrooms.utils;
 
+import io.github.quantizr.dungeonrooms.handlers.ScoreboardHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.BlockPos;
@@ -159,5 +160,10 @@ public class RoomDetectionUtils {
         }
 
         return false;
+    }
+
+    public static String getBossRoomId(){
+        return "boss-" + ScoreboardHandler.getSidebarLines().get(3).replace("(", "*").replace(")", "*").
+                split("\\*")[1];
     }
 }

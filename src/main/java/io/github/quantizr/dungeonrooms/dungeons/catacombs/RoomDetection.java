@@ -28,6 +28,9 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -54,6 +57,7 @@ public class RoomDetection {
     public static String roomName = "undefined";
     public static String roomDirection = "undefined";
     public static Point roomCorner;
+    public static boolean isInBossRoom = false;
 
 
     public static HashSet<BlockPos> currentScannedBlocks = new HashSet<>();
@@ -231,6 +235,11 @@ public class RoomDetection {
 
     void updateCurrentRoom() {
         EntityPlayerSP player = mc.thePlayer;
+
+        if(player.inventory.getStackInSlot(8).getItem() == Items.nether_star){
+            isInBossRoom = true;
+        }
+
         map = MapUtils.updatedMap();
         if (map == null) return;
         Point currentPhysicalCorner = MapUtils.getClosestNWPhysicalCorner(player.getPositionVector());
@@ -259,6 +268,7 @@ public class RoomDetection {
         roomName = "undefined";
         roomDirection = "undefined";
         roomCorner = null;
+        isInBossRoom = false;
 
         currentScannedBlocks = new HashSet<>();
         blocksToCheck = new HashMap<>();
