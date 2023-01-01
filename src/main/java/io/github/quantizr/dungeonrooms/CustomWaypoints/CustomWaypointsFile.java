@@ -22,6 +22,7 @@ public class CustomWaypointsFile {
     private final static String file = "config/DungeonRoomsCustom.cfg";
     public static HashMap<String, Set<CustomPoint>> points = new HashMap<>();
     static Configuration config;
+    private static int pointer = 0;
     public static void initWaypoints() {
         config = new Configuration(new File(file));
         try {
@@ -32,33 +33,35 @@ public class CustomWaypointsFile {
             config.save();
         }
         points.clear();
-        int pointer = 0;
-        while (config.hasCategory(pointer + "")) {
+        pointer = 0;
+        for(String s : config.getCategoryNames()) {
             try{
-                ConfigCategory c = config.getCategory(pointer + "");
+                int i = Integer.parseInt(s);
+                if(i > pointer)
+                    pointer = i;
+
+                ConfigCategory c = config.getCategory(s);
                 BlockPos p = new BlockPos(c.get("x").getInt(), c.get("y").getInt(), c.get("z").getInt());
                 String name = c.get("name").getString();
                 String room = c.get("room").getString();
                 if (points.containsKey(room))
-                    points.get(room).add(new CustomPoint(p, name));
+                    points.get(room).add(new CustomPoint(p, name, i));
                 else {
                     Set<CustomPoint> cP = new HashSet<>();
-                    cP.add(new CustomPoint(p, name));
+                    cP.add(new CustomPoint(p, name, i));
                     points.put(room, cP);
                 }
                 DungeonRooms.logger.info("Loaded custom waypoint \"" + name + "\" at " + p.toString());
             }catch (Exception e){
                 e.printStackTrace();
                 DungeonRooms.logger.error("Failed to load custom waypoint at the point "+ pointer +"!");
-            }finally {
-                pointer++;
             }
         }
     }
     public static void setWaypoint(BlockPos loc, String name){
         DungeonRooms.logger.info(loc.toString());
-        String room = (RoomDetection.isInBossRoom) ? RoomDetectionUtils.getBossRoomId() : RoomDetection.roomName;
-        if(!RoomDetection.isInBossRoom)
+        String room = (RoomDetection.isInBossRoom()) ? RoomDetectionUtils.getBossRoomId() : RoomDetection.roomName;
+        if(!RoomDetection.isInBossRoom())
             loc = MapUtils.actualToRelative(loc, RoomDetection.roomDirection, RoomDetection.roomCorner);
         int pointer = 0;
         while (config.hasCategory(pointer + ""))
@@ -71,14 +74,37 @@ public class CustomWaypointsFile {
         Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Added a new waypoint to the relative Coords: " + blockPosToString(loc)));
         config.save();
         if(points.containsKey(room))
-            points.get(room).add(new CustomPoint(loc, name));
+            points.get(room).add(new CustomPoint(loc, name, pointer));
         else {
             Set<CustomPoint> cP = new HashSet<>();
-            cP.add(new CustomPoint(loc, name));
+            cP.add(new CustomPoint(loc, name, pointer));
             points.put(room, cP);
         }
     }
     private static String blockPosToString(BlockPos p){
         return p.getX() + " " + p.getY() + " " + p.getZ();
+    }
+    public static boolean removePoint(BlockPos p){
+        if(!RoomDetection.isInBossRoom())
+            p = MapUtils.actualToRelative(p, RoomDetection.roomDirection, RoomDetection.roomCorner);
+        Set<CustomPoint> cP = points.get((RoomDetection.isInBossRoom()) ? RoomDetectionUtils.getBossRoomId() : RoomDetection.roomName);
+        if(cP == null || cP.isEmpty())
+            return false;
+        for (CustomPoint point : new HashSet<>(cP)){
+            if(point.getPosition().equals(p)){
+                if(point.getPointer() == pointer)
+                    pointer--;
+                cP.remove(point);
+                try {
+                    config.removeCategory(config.getCategory(point.getPointer() + ""));
+                    config.save();
+                }catch (Exception e){
+                    Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("§cDungeonRoomsMod: An error occured: " + e.getMessage() + " §7(" + e.getClass().getSimpleName() + ")"));
+                    e.printStackTrace();
+                }
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -18,6 +18,7 @@
 
 package io.github.quantizr.dungeonrooms.utils;
 
+import io.github.quantizr.dungeonrooms.DungeonRooms;
 import io.github.quantizr.dungeonrooms.handlers.ScoreboardHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -156,14 +157,27 @@ public class RoomDetectionUtils {
 
         if (relZ >= 13 && relZ <= 17) {
             if (relX <= 2) return true;
-            if (relX >= 28) return true;
+            return relX >= 28;
         }
 
         return false;
     }
 
     public static String getBossRoomId(){
-        return "boss-" + ScoreboardHandler.getSidebarLines().get(3).replace("(", "*").replace(")", "*").
-                split("\\*")[1];
+        if(!Utils.inCatacombs)
+            return "undefined";
+
+
+        if(ScoreboardHandler.getSidebarLines().size() >= 4)
+        try {
+            return "boss-" + ScoreboardHandler.getSidebarLines().get(3).
+                    split("[()]")[1];
+        }catch (Exception e){
+            if(!(e instanceof ArrayIndexOutOfBoundsException))
+                e.printStackTrace();
+            else DungeonRooms.logger.error("DungeonRoomsModAddon: an error occurred!");
+            return "undefined";
+        }
+        else return  "undefined";
     }
 }

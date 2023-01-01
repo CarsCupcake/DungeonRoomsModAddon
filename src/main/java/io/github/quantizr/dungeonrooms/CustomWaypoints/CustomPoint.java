@@ -8,9 +8,12 @@ public class CustomPoint {
     private final BlockPos position;
     @Getter
     private final String name;
-    public CustomPoint(BlockPos p, String s){
+    @Getter
+    private final int pointer;
+    public CustomPoint(BlockPos p, String s, int pointer){
         this.position = p;
         this.name = s;
+        this.pointer = pointer;
     }
 
 }

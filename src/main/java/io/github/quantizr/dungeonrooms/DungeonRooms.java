@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.quantizr.dungeonrooms.CustomWaypoints.CustomWaypointsFile;
 import io.github.quantizr.dungeonrooms.commands.AddWaypointCommand;
+import io.github.quantizr.dungeonrooms.commands.RemoveWaypointCommand;
 import io.github.quantizr.dungeonrooms.commands.RoomCommand;
 import io.github.quantizr.dungeonrooms.dungeons.catacombs.Waypoints;
 import io.github.quantizr.dungeonrooms.gui.WaypointsGUI;
@@ -102,6 +103,7 @@ public class DungeonRooms
     public void preInit(final FMLPreInitializationEvent event) {
         ClientCommandHandler.instance.registerCommand(new RoomCommand());
         ClientCommandHandler.instance.registerCommand(new AddWaypointCommand());
+        ClientCommandHandler.instance.registerCommand(new RemoveWaypointCommand());
         configDir = event.getModConfigurationDirectory().toString();
 
         //initialize logger

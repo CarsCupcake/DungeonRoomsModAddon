@@ -182,10 +182,14 @@ public class Waypoints {
                 GlStateManager.enableCull();
             }
         }
-        Set<CustomPoint> cP = CustomWaypointsFile.points.get((RoomDetection.isInBossRoom) ? RoomDetectionUtils.getBossRoomId() : roomName);
+
+        if(!Utils.inCatacombs)
+            return;
+        Set<CustomPoint> cP = CustomWaypointsFile.points.get((RoomDetection.isInBossRoom()) ? RoomDetectionUtils.getBossRoomId() : roomName);
         if(cP != null && !cP.isEmpty() && customWaypointsOn){
             for(CustomPoint p : cP){
-                BlockPos pos = MapUtils.relativeToActual(p.getPosition(), RoomDetection.roomDirection, RoomDetection.roomCorner);
+
+                BlockPos pos = (!RoomDetection.isInBossRoom()) ? MapUtils.relativeToActual(p.getPosition(), RoomDetection.roomDirection, RoomDetection.roomCorner) : p.getPosition();
                 Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
                 frustum.setPosition(viewer.posX, viewer.posY, viewer.posZ);
                 if (!frustum.isBoxInFrustum(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, 255, pos.getZ() + 1)){
