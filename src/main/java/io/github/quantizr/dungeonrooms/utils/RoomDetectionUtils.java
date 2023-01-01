@@ -22,12 +22,20 @@ import io.github.quantizr.dungeonrooms.DungeonRooms;
 import io.github.quantizr.dungeonrooms.handlers.ScoreboardHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.scoreboard.Score;
+import net.minecraft.scoreboard.ScoreObjective;
+import net.minecraft.scoreboard.ScorePlayerTeam;
+import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class RoomDetectionUtils {
     public static final double DEG_TO_RAD = Math.PI / 180.0;
@@ -168,11 +176,13 @@ public class RoomDetectionUtils {
             return "undefined";
 
 
+
         if(ScoreboardHandler.getSidebarLines().size() >= 4)
         try {
-            String[] s = ScoreboardHandler.getSidebarLines().get(3).
+            if(ScoreboardHandler.getSidebarLines().get(4) == null)
+                return "boss-?";
+            String[] s = getDungeonScore().
                     split("[()]");
-            DungeonRooms.logger.info("DungeonRoomsAddons Debug: " + Arrays.toString(s));
             if(s.length <= 1)
                 return "boss-?";
             return "boss-" + s[1];
@@ -183,5 +193,11 @@ public class RoomDetectionUtils {
             return "boss-?";
         }
         else return  "boss-?";
+    }
+    private static String getDungeonScore(){
+        Scoreboard scoreboard = Minecraft.getMinecraft().theWorld.getScoreboard();
+        ScoreObjective objective = scoreboard.getObjectiveInDisplaySlot(1);
+        Stream<Score> s = scoreboard.getSortedScores(objective).stream().filter(score -> score != null && score.getPlayerName() != null && !score.getPlayerName().startsWith("#"));
+        return s.map(score -> ScorePlayerTeam.formatPlayerName(scoreboard.getPlayersTeam(score.getPlayerName()), score.getPlayerName())).collect(Collectors.toList()).get(6);
     }
 }
