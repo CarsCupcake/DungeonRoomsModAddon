@@ -28,7 +28,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraft.init.Items;
 import net.minecraft.util.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -457,6 +456,6 @@ public class RoomDetection {
     public static boolean isInBossRoom(){
         if(Minecraft.getMinecraft() == null || Minecraft.getMinecraft().thePlayer == null || Minecraft.getMinecraft().thePlayer.inventory == null || Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(8) == null || roomName == null)
             return false;
-        return Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(8).getItem() == Items.nether_star || roomName.equals("Boss Room");
+        return !MapUtils.mapExists();
     }
 }

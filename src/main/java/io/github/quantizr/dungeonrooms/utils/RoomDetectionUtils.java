@@ -170,14 +170,18 @@ public class RoomDetectionUtils {
 
         if(ScoreboardHandler.getSidebarLines().size() >= 4)
         try {
-            return "boss-" + ScoreboardHandler.getSidebarLines().get(3).
-                    split("[()]")[1];
+            String[] s = ScoreboardHandler.getSidebarLines().get(3).
+                    split("[()]");
+            DungeonRooms.logger.info("DungeonRoomsAddons Debug: " + Arrays.toString(s));
+            if(s.length <= 1)
+                return "boss-?";
+            return "boss-" + s[1];
         }catch (Exception e){
             if(!(e instanceof ArrayIndexOutOfBoundsException))
                 e.printStackTrace();
             else DungeonRooms.logger.error("DungeonRoomsModAddon: an error occurred!");
-            return "undefined";
+            return "boss-?";
         }
-        else return  "undefined";
+        else return  "boss-?";
     }
 }
