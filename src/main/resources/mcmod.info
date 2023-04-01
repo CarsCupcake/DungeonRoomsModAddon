@@ -11,6 +11,6 @@
   "credits": "",
   "logoFile": "assets/dungeonrooms/logo.png",
   "screenshots": [],
-  "dependencies": []
+  "dependencies": ["WorldEdit"]
 }
 ]

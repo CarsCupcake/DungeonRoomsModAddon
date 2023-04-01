@@ -6,6 +6,9 @@ buildscript {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
+        mavenCentral()
+
+
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
@@ -19,7 +22,7 @@ archivesBaseName = "Dungeon_Rooms"
 
 sourceCompatibility = targetCompatibility = 1.8
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"
 }
 
@@ -67,4 +70,12 @@ processResources {
 
 dependencies {
     implementation 'org.projectlombok:lombok:1.18.22'
+    compileOnly("com.sk89q.worldedit:worldedit-forge-mc1.8.9:6.1.1")
+    compileOnly("com.sk89q.worldedit:worldedit-core:6.1.1-SNAPSHOT")
+}
+repositories {
+    maven {
+        name = name("EnginHub")
+        url = uri("https://maven.enginehub.org/repo/")
+    }
 }

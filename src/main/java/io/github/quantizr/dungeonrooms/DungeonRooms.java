@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.quantizr.dungeonrooms.CustomWaypoints.CustomWaypointsFile;
 import io.github.quantizr.dungeonrooms.commands.AddWaypointCommand;
+import io.github.quantizr.dungeonrooms.commands.DownloadRoom;
 import io.github.quantizr.dungeonrooms.commands.RemoveWaypointCommand;
 import io.github.quantizr.dungeonrooms.commands.RoomCommand;
 import io.github.quantizr.dungeonrooms.dungeons.catacombs.Waypoints;
@@ -45,6 +46,8 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.client.event.sound.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Loader;
@@ -97,6 +100,7 @@ public class DungeonRooms
 
     public static List<String> motd = null;
     public static String configDir;
+    public static String schmaticDir;
     public static boolean firstLogin = false;
 
     @EventHandler
@@ -104,7 +108,9 @@ public class DungeonRooms
         ClientCommandHandler.instance.registerCommand(new RoomCommand());
         ClientCommandHandler.instance.registerCommand(new AddWaypointCommand());
         ClientCommandHandler.instance.registerCommand(new RemoveWaypointCommand());
+        ClientCommandHandler.instance.registerCommand(new DownloadRoom());
         configDir = event.getModConfigurationDirectory().toString();
+        schmaticDir = configDir + "\\rooms\\";
 
         //initialize logger
         logger = LogManager.getLogger(DungeonRooms.class);
@@ -327,4 +333,6 @@ public class DungeonRooms
             }
         }
     }
+
+
 }

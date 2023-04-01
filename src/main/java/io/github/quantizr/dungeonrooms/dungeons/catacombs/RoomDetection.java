@@ -33,6 +33,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.awt.*;
+import java.io.File;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.*;
@@ -40,7 +41,7 @@ import java.util.concurrent.*;
 import static io.github.quantizr.dungeonrooms.dungeons.catacombs.DungeonManager.*;
 
 public class RoomDetection {
-    Minecraft mc = Minecraft.getMinecraft();
+    static Minecraft mc = Minecraft.getMinecraft();
     static int stage2Ticks = 0;
 
     static ExecutorService stage2Executor;
@@ -202,6 +203,7 @@ public class RoomDetection {
                        redoScan = System.currentTimeMillis() + 5000;
 
                     } else if (possibleRoomsSet.size() == 1) { //room found
+
                         roomName =  possibleRoomsSet.first();
                         roomDirection = tempDirection;
                         roomCorner = MapUtils.getPhysicalCornerPos(roomDirection, currentPhysicalSegments);
@@ -229,7 +231,7 @@ public class RoomDetection {
     }
 
 
-    void updateCurrentRoom() {
+    public static void updateCurrentRoom() {
         EntityPlayerSP player = mc.thePlayer;
 
 
@@ -279,6 +281,8 @@ public class RoomDetection {
     public static void newRoom() {
         if (!roomName.equals("undefined") && !roomCategory.equals("undefined")) {
             //update Waypoints info
+            if(new File(DungeonRooms.schmaticDir, roomName + ".schematic").exists())
+                Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("§aUnsafted Room!"));
             if (DungeonRooms.roomsJson.get(roomName) != null) {
                 Waypoints.secretNum = DungeonRooms.roomsJson.get(roomName).getAsJsonObject().get("secrets").getAsInt();
                 Waypoints.allSecretsMap.putIfAbsent(roomName, new ArrayList<>(Collections.nCopies(Waypoints.secretNum, true)));
