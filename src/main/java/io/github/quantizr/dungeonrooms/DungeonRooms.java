@@ -22,10 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.quantizr.dungeonrooms.CustomWaypoints.CustomWaypointsFile;
-import io.github.quantizr.dungeonrooms.commands.AddWaypointCommand;
-import io.github.quantizr.dungeonrooms.commands.DownloadRoom;
-import io.github.quantizr.dungeonrooms.commands.RemoveWaypointCommand;
-import io.github.quantizr.dungeonrooms.commands.RoomCommand;
+import io.github.quantizr.dungeonrooms.commands.*;
 import io.github.quantizr.dungeonrooms.dungeons.catacombs.Waypoints;
 import io.github.quantizr.dungeonrooms.gui.WaypointsGUI;
 import io.github.quantizr.dungeonrooms.handlers.ConfigHandler;
@@ -109,6 +106,9 @@ public class DungeonRooms
         ClientCommandHandler.instance.registerCommand(new AddWaypointCommand());
         ClientCommandHandler.instance.registerCommand(new RemoveWaypointCommand());
         ClientCommandHandler.instance.registerCommand(new DownloadRoom());
+        ClientCommandHandler.instance.registerCommand(new DebugSoundCMD());
+        ClientCommandHandler.instance.registerCommand(new GetLastCommands());
+        ClientCommandHandler.instance.registerCommand(new CopyAttributes());
         configDir = event.getModConfigurationDirectory().toString();
         schmaticDir = configDir + "\\rooms\\";
 
@@ -138,6 +138,8 @@ public class DungeonRooms
         MinecraftForge.EVENT_BUS.register(new DungeonManager());
         MinecraftForge.EVENT_BUS.register(new RoomDetection());
         MinecraftForge.EVENT_BUS.register(new Waypoints());
+        MinecraftForge.EVENT_BUS.register(new DebugSoundCMD());
+        MinecraftForge.EVENT_BUS.register(new GetLastCommands());
 
         //reload config
         ConfigHandler.reloadConfig();

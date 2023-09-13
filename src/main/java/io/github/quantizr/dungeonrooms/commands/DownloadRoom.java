@@ -55,6 +55,31 @@ public class DownloadRoom extends CommandBase {
         System.out.println(player);
         System.out.println(player.playerLocation);
 
+        save(player);
+    }
+    private static List<EnumFacing> rotating(){
+        ArrayList<EnumFacing> facings = new ArrayList<>();
+        String d = RoomDetection.roomDirection;
+        if(getFromLetter(RoomDetection.roomDirection.charAt(0)) != null && getFromLetter(RoomDetection.roomDirection.charAt(1)) != null)
+            d = "NW";
+
+        facings.add(getFromLetter(d.charAt(0)));
+        facings.add(getFromLetter(d.charAt(1)));
+        facings.add(getFromLetter(d.charAt(0)).getOpposite());
+        facings.add(getFromLetter(d.charAt(1)).getOpposite());
+        return facings;
+    }
+    private static EnumFacing getFromLetter(char c){
+        switch (c){
+            case 'N': return EnumFacing.NORTH;
+            case 'E': return EnumFacing.EAST;
+            case 'S': return EnumFacing.SOUTH;
+            case 'W': return EnumFacing.WEST;
+        }
+        return null;
+    }
+    public static void save(EntityPlayer player){
+        Minecraft minecraft = Minecraft.getMinecraft();
         Thread thread = new Thread(()->
         {
             BlockPos base = new BlockPos(player.chasingPosX, 0, player.chasingPosZ);
@@ -107,7 +132,7 @@ public class DownloadRoom extends CommandBase {
             } catch (WorldEditException e) {
                 throw new RuntimeException(e);
             }
-            File dir = new File(DungeonRooms.schmaticDir, RoomDetection.roomName + ".schematic");
+            File dir = new File(DungeonRooms.schmaticDir, RoomDetection.roomCategory + "-" + RoomDetection.roomName + ".schematic");
             try (ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(Files.newOutputStream(dir.toPath()))) {
                 writer.write(clipboard, world.getWorldData());
             } catch (IOException e) {
@@ -116,26 +141,6 @@ public class DownloadRoom extends CommandBase {
             player.addChatMessage(new ChatComponentText("§aSaved schematic: " + RoomDetection.roomName));
         });
         thread.start();
-    }
-    private List<EnumFacing> rotating(){
-        ArrayList<EnumFacing> facings = new ArrayList<>();
-        if(getFromLetter(RoomDetection.roomDirection.charAt(0)) != null && getFromLetter(RoomDetection.roomDirection.charAt(1)) != null)
-            throw new StringIndexOutOfBoundsException("Room Direction is bad!");
-
-        facings.add(getFromLetter(RoomDetection.roomDirection.charAt(0)));
-        facings.add(getFromLetter(RoomDetection.roomDirection.charAt(1)));
-        facings.add(getFromLetter(RoomDetection.roomDirection.charAt(0)).getOpposite());
-        facings.add(getFromLetter(RoomDetection.roomDirection.charAt(1)).getOpposite());
-        return facings;
-    }
-    private EnumFacing getFromLetter(char c){
-        switch (c){
-            case 'N': return EnumFacing.NORTH;
-            case 'E': return EnumFacing.EAST;
-            case 'S': return EnumFacing.SOUTH;
-            case 'W': return EnumFacing.WEST;
-        }
-        return null;
     }
 
 }

@@ -20,6 +20,8 @@ package io.github.quantizr.dungeonrooms.dungeons.catacombs;
 
 import com.google.gson.JsonObject;
 import io.github.quantizr.dungeonrooms.DungeonRooms;
+import io.github.quantizr.dungeonrooms.commands.DownloadRoom;
+import io.github.quantizr.dungeonrooms.gui.WaypointsGUI;
 import io.github.quantizr.dungeonrooms.utils.MapUtils;
 import io.github.quantizr.dungeonrooms.utils.RoomDetectionUtils;
 import io.github.quantizr.dungeonrooms.utils.Utils;
@@ -27,7 +29,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.command.CommandBase;
 import net.minecraft.util.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -281,8 +285,11 @@ public class RoomDetection {
     public static void newRoom() {
         if (!roomName.equals("undefined") && !roomCategory.equals("undefined")) {
             //update Waypoints info
-            if(new File(DungeonRooms.schmaticDir, roomName + ".schematic").exists())
-                Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("§aUnsafted Room!"));
+            if(!new File(DungeonRooms.schmaticDir, roomCategory + "-" + roomName + ".schematic").exists()) {
+                Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("§aUnsaved Room!"));
+                if(Waypoints.customWaypointsOn)
+                    DownloadRoom.save(Minecraft.getMinecraft().thePlayer);
+            }
             if (DungeonRooms.roomsJson.get(roomName) != null) {
                 Waypoints.secretNum = DungeonRooms.roomsJson.get(roomName).getAsJsonObject().get("secrets").getAsInt();
                 Waypoints.allSecretsMap.putIfAbsent(roomName, new ArrayList<>(Collections.nCopies(Waypoints.secretNum, true)));
@@ -296,7 +303,7 @@ public class RoomDetection {
             if (guiToggled) {
                 List<String> lineList = new ArrayList<>();
                 String line = "Dungeon Rooms: You are in " + EnumChatFormatting.GREEN + roomCategory
-                        + EnumChatFormatting.WHITE + " - " + EnumChatFormatting.GREEN + roomName;
+                        + EnumChatFormatting.WHITE + " - " + EnumChatFormatting.GREEN + roomName + " " + roomDirection;
 
                 if (DungeonRooms.roomsJson.get(roomName) != null) {
                     JsonObject roomJson = DungeonRooms.roomsJson.get(roomName).getAsJsonObject();
