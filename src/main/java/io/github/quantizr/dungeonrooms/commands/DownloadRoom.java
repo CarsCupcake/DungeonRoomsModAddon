@@ -54,8 +54,7 @@ public class DownloadRoom extends CommandBase {
         EntityPlayer player = (EntityPlayer) iCommandSender;
         System.out.println(player);
         System.out.println(player.playerLocation);
-
-        save(player);
+        //save(player);
     }
     private static List<EnumFacing> rotating(){
         ArrayList<EnumFacing> facings = new ArrayList<>();
@@ -78,7 +77,7 @@ public class DownloadRoom extends CommandBase {
         }
         return null;
     }
-    public static void save(EntityPlayer player){
+    /*public static void save(EntityPlayer player){
         Minecraft minecraft = Minecraft.getMinecraft();
         Thread thread = new Thread(()->
         {
@@ -141,6 +140,6 @@ public class DownloadRoom extends CommandBase {
             player.addChatMessage(new ChatComponentText("§aSaved schematic: " + RoomDetection.roomName));
         });
         thread.start();
-    }
+    }*/
 
 }

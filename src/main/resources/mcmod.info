@@ -10,7 +10,6 @@
   "authorList": ["_risk (aka Quantizr)"],
   "credits": "",
   "logoFile": "assets/dungeonrooms/logo.png",
-  "screenshots": [],
-  "dependencies": ["WorldEdit"]
+  "screenshots": []
 }
 ]

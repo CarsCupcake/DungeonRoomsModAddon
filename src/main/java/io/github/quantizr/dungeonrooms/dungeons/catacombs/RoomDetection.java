@@ -285,11 +285,11 @@ public class RoomDetection {
     public static void newRoom() {
         if (!roomName.equals("undefined") && !roomCategory.equals("undefined")) {
             //update Waypoints info
-            if(!new File(DungeonRooms.schmaticDir, roomCategory + "-" + roomName + ".schematic").exists()) {
+            /*if(!new File(DungeonRooms.schmaticDir, roomCategory + "-" + roomName + ".schematic").exists()) {
                 Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("§aUnsaved Room!"));
                 if(Waypoints.customWaypointsOn)
                     DownloadRoom.save(Minecraft.getMinecraft().thePlayer);
-            }
+            }*/
             if (DungeonRooms.roomsJson.get(roomName) != null) {
                 Waypoints.secretNum = DungeonRooms.roomsJson.get(roomName).getAsJsonObject().get("secrets").getAsInt();
                 Waypoints.allSecretsMap.putIfAbsent(roomName, new ArrayList<>(Collections.nCopies(Waypoints.secretNum, true)));
